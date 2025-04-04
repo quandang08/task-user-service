@@ -1,0 +1,17 @@
+server:
+  port: 5001
+
+spring:
+  application:
+    name: USER-SERVICE
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/yt_task_user_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: ${DB_PASSWORD:quan2108}
+    driver-class-name: com.mysql.cj.jdbc.Driver
