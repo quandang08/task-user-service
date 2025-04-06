@@ -37,6 +37,29 @@ public class JwtProvider {
 
         return token;
     }
+    // Trong JwtProvider
+    public String getEmailFromJwtToken(String token) {
+        try {
+            // Xử lý token nếu có Bearer prefix
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Lấy subject thay vì claim "email" vì bạn đã set subject trong generateToken()
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            // Nếu muốn lấy email cả khi token hết hạn
+            return e.getClaims().getSubject();
+        } catch (JwtException e) {
+            throw new JwtValidationException("Invalid token", e);
+        }
+    }
 
     public Claims parseToken(String token) {
         try {
