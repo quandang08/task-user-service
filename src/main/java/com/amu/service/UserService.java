@@ -1,8 +1,11 @@
 package com.amu.service;
 
+import com.amu.dto.user.UserResponse;
 import com.amu.entities.User;
 
-public interface UserService {
+import java.util.List;
 
-    User getUserProfile(String jwt);
+public interface UserService {
+    UserResponse getUserProfile(String jwt);
+    List<UserResponse> getAllUser();
 }

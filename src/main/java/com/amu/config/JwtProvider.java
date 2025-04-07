@@ -51,10 +51,8 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Lấy subject thay vì claim "email" vì bạn đã set subject trong generateToken()
             return claims.getSubject();
         } catch (ExpiredJwtException e) {
-            // Nếu muốn lấy email cả khi token hết hạn
             return e.getClaims().getSubject();
         } catch (JwtException e) {
             throw new JwtValidationException("Invalid token", e);
