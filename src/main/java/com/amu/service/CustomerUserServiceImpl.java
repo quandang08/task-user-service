@@ -1,4 +1,4 @@
-package com.amu.service.impl;
+package com.amu.service;
 
 import com.amu.entities.User;
 import com.amu.repositories.UserRepository;

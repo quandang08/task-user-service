@@ -6,7 +6,7 @@ import com.amu.dto.login.LoginRequest;
 import com.amu.entities.User;
 import com.amu.exception.AuthenticationException;
 import com.amu.repositories.UserRepository;
-import com.amu.service.impl.CustomerUserServiceImpl;
+import com.amu.service.CustomerUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

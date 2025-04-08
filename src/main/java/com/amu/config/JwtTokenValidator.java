@@ -1,6 +1,6 @@
 package com.amu.config;
 
-import com.amu.service.impl.CustomerUserServiceImpl;
+import com.amu.service.CustomerUserServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
