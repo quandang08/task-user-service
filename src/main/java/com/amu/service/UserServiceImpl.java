@@ -1,4 +1,4 @@
-package com.amu.service.impl;
+package com.amu.service;
 
 import com.amu.config.JwtProvider;
 import com.amu.dto.user.UserResponse;
