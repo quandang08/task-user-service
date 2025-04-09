@@ -30,6 +30,11 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        String path = request.getRequestURI();
+        if (path.startsWith("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         Optional.ofNullable(request.getHeader(JWTConstant.JWT_TOKEN_HEADER))
                 .filter(header -> header.startsWith("Bearer "))
                 .map(header -> {

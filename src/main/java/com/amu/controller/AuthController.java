@@ -73,7 +73,7 @@ public class AuthController {
             Authentication authentication = authenticate(loginRequest.getEmail(), loginRequest.getPassword());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtProvider.generateToken(authentication);
-            return ResponseEntity.ok(new AuthResponse(token, "Login successful", true));
+            return ResponseEntity.ok(new AuthResponse(token, "Đăng nhập thành công", true));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse(null, "Invalid username or password", false));
