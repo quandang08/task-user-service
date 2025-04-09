@@ -31,6 +31,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String path = request.getRequestURI();
+        //Sửa ở đây để cho phép signin ko cần xác thực đầu vào
         if (path.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
