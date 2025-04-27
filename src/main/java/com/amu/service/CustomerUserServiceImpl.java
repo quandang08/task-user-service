@@ -1,5 +1,6 @@
 package com.amu.service;
 
+import com.amu.entities.CustomUserDetails;
 import com.amu.entities.User;
 import com.amu.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,6 @@ public class CustomerUserServiceImpl implements org.springframework.security.cor
         }
         System.out.println("User role from DB: " + user.getRole());
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (user.getRole() != null && !user.getRole().isEmpty()) {
-            authorities.add(new SimpleGrantedAuthority(user.getRole()));
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
+        return new CustomUserDetails(user);
     }
 }

@@ -3,8 +3,10 @@ package com.amu.controller;
 import com.amu.config.JwtProvider;
 import com.amu.dto.auth.AuthResponse;
 import com.amu.dto.login.LoginRequest;
+import com.amu.entities.CustomUserDetails;
 import com.amu.entities.User;
 import com.amu.exception.AuthenticationException;
+import com.amu.repositories.UserDetailsRepository;
 import com.amu.repositories.UserRepository;
 import com.amu.service.CustomerUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import com.amu.entities.UserDetails;
+import java.time.LocalDateTime;
 
 
 @RestController
@@ -26,6 +29,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,6 +44,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) {
+        // Kiểm tra các trường thông tin cần thiết
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             return ResponseEntity.badRequest()
                     .body(new AuthResponse(null, "Email không được để trống", false));
@@ -51,20 +58,43 @@ public class AuthController {
                     .body(new AuthResponse(null, "Email đã tồn tại", false));
         }
 
+        // Tạo mới User và lưu vào database
         User newUser = new User();
         newUser.setEmail(user.getEmail());
+        newUser.setFullName(user.getFullName());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setRole(user.getRole() != null ? user.getRole() : "ROLE_USER");
 
         User savedUser = userRepository.save(newUser);
 
-        UserDetails userDetails = customUserDetails.loadUserByUsername(savedUser.getEmail());
+        // Tạo mới UserDetails và liên kết với User
+        UserDetails newUserDetails = new UserDetails();
+        newUserDetails.setUser(savedUser);
+
+        // Thiết lập thông tin mặc định cho UserDetails
+        newUserDetails.setAvatarUrl("");
+        newUserDetails.setPhoneNumber("");
+        newUserDetails.setAddress("");
+        newUserDetails.setDateOfBirth(null);
+        newUserDetails.setGithubUrl("");
+        newUserDetails.setJobTitle("");
+        newUserDetails.setCompanyName("");
+        newUserDetails.setCreatedAt(LocalDateTime.now());
+        newUserDetails.setUpdatedAt(LocalDateTime.now());
+
+        // Lưu UserDetails vào database
+        userDetailsRepository.save(newUserDetails);
+
+        // Cấp token JWT và trả về phản hồi
+        CustomUserDetails userDetailsForResponse = (CustomUserDetails) customUserDetails.loadUserByUsername(savedUser.getEmail());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities()
+                userDetailsForResponse, null, userDetailsForResponse.getAuthorities()
         );
         String token = jwtProvider.generateToken(authentication);
+
         return ResponseEntity.ok(new AuthResponse(token, "Đăng ký thành công", true));
     }
+
 
     @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest) {
@@ -80,7 +110,7 @@ public class AuthController {
     }
 
     private Authentication authenticate(String username, String password) {
-        UserDetails userDetails = customUserDetails.loadUserByUsername(username);
+        CustomUserDetails userDetails = (CustomUserDetails) customUserDetails.loadUserByUsername(username);
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
