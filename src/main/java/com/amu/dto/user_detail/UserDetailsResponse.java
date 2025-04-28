@@ -1,4 +1,4 @@
-package com.amu.dto.user;
+package com.amu.dto.user_detail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class UserDetailsResponse {
     private String fullName;
     private String role;
+    private String email;
     private String avatarUrl;
     private String phoneNumber;
     private String address;

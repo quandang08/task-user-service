@@ -1,6 +1,7 @@
 package com.amu.controller;
 
-import com.amu.dto.user.UserDetailsResponse;
+import com.amu.dto.user_detail.UpdateUserDetailsRequest;
+import com.amu.dto.user_detail.UserDetailsResponse;
 import com.amu.entities.UserDetails;
 import com.amu.service.UserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,16 @@ public class UserDetailsController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDetails> updateUserDetails(@PathVariable Long userId, @RequestBody UserDetails userDetails) {
+    public ResponseEntity<UserDetailsResponse> updateUserDetails(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserDetailsRequest updateRequest
+    ) {
         try {
-            userDetailsService.updateUserDetails(userId, userDetails);
-            return ResponseEntity.ok(userDetails);
+            UserDetails updatedUserDetails = userDetailsService.updateUserDetails(userId, updateRequest);
+
+            UserDetailsResponse userDetailsResponse = UserDetailsMapper.toUserDetailsResponse(updatedUserDetails);
+
+            return ResponseEntity.ok(userDetailsResponse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

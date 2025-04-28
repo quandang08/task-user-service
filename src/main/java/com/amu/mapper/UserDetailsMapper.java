@@ -1,6 +1,6 @@
 package com.amu.mapper;
 
-import com.amu.dto.user.UserDetailsResponse;
+import com.amu.dto.user_detail.UserDetailsResponse;
 import com.amu.entities.UserDetails;
 
 public class UserDetailsMapper {
@@ -10,6 +10,7 @@ public class UserDetailsMapper {
         return new UserDetailsResponse(
                 userDetails.getUser().getFullName(),
                 userDetails.getUser().getRole(),
+                userDetails.getUser().getEmail(),
                 userDetails.getAvatarUrl(),
                 userDetails.getPhoneNumber(),
                 userDetails.getAddress(),
