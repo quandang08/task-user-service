@@ -7,8 +7,9 @@ public class UserDetailsMapper {
 
     // Chuyển đổi từ UserDetails sang UserDetailsResponse
     public static UserDetailsResponse toUserDetailsResponse(UserDetails userDetails) {
-
         return new UserDetailsResponse(
+                userDetails.getUser().getFullName(),
+                userDetails.getUser().getRole(),
                 userDetails.getAvatarUrl(),
                 userDetails.getPhoneNumber(),
                 userDetails.getAddress(),
